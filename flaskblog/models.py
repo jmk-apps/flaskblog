@@ -12,7 +12,7 @@ class User(db.Model):
     username: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     image_file: Mapped[str] = mapped_column(String(20), nullable=False, default="default.jpg")
-    password: Mapped[str] = mapped_column(String(100), nullable=False)
+    password: Mapped[str] = mapped_column(String(200), nullable=False)
     posts: Mapped[list["Post"]] = relationship(back_populates="author")
 
     def __repr__(self) -> str:
