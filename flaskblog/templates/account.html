@@ -10,7 +10,7 @@
         </div>
       </div>
       <!-- FORM HERE -->
-        <form action="" method="post" novalidate>
+        <form action="" method="post" enctype="multipart/form-data" novalidate>
             {{ form.csrf_token }}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Account Info</legend>
@@ -38,6 +38,20 @@
                         </div>
                     {% else %}
                         {{ form.email(class_="form-control form-control-lg mb-3") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.picture.label(class_="form-label") }}
+
+                    {% if form.picture.errors %}
+                        {{ form.picture(class_="form-control") }}
+                        <div class="mb-3">
+                            {% for error in form.picture.errors %}
+                                <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.picture(class_="form-control mb-3") }}
                     {% endif %}
                 </div>
             </fieldset>
