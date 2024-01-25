@@ -18,6 +18,10 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URI")
 db.init_app(app)
 login_manager.init_app(app)
 
+# If a user tries to access a route (i.e one that has login_required) without loging in, they are redirected to the login route.
+login_manager.login_view = "login"
+login_manager.login_message_category = "info"
+
 from flaskblog.models import User, Post
 from flaskblog import routes
 
