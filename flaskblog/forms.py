@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed, FileSize
-from wtforms import StringField, EmailField, PasswordField, BooleanField, SubmitField
+from flask_wtf.file import FileField, FileAllowed
+from wtforms import StringField, EmailField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import InputRequired, Length, Email, EqualTo, ValidationError
 from flaskblog import db
 from flaskblog.models import User
@@ -11,7 +11,8 @@ class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired(), Length(min=2, max=20)])
     email = EmailField('Email', validators=[InputRequired(), Email()])
     password = PasswordField('Password', validators=[InputRequired()])
-    confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), EqualTo("password", 'Passwords must match')])
+    confirm_password = PasswordField('Confirm Password',
+                                     validators=[InputRequired(), EqualTo("password", 'Passwords must match')])
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):
@@ -49,3 +50,9 @@ class UpdateAccountForm(FlaskForm):
             user = db.session.execute(db.select(User).where(User.email == email.data)).scalar()
             if user:
                 raise ValidationError("That email is taken. Please choose a different one.")
+
+
+class PostForm(FlaskForm):
+    title = StringField('Title', validators=[InputRequired()])
+    content = TextAreaField('Content', validators=[InputRequired()])
+    submit = SubmitField('Post')
