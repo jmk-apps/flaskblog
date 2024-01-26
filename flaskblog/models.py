@@ -1,8 +1,9 @@
-from flaskblog import db, login_manager
+from flaskblog import db, login_manager, app
 from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, DateTime, Text, ForeignKey
 from flask_login import UserMixin
+from itsdangerous import URLSafeTimedSerializer
 
 
 @login_manager.user_loader
@@ -19,6 +20,19 @@ class User(db.Model, UserMixin):
     image_file: Mapped[str] = mapped_column(String(20), nullable=False, default="default.jpg")
     password: Mapped[str] = mapped_column(String(200), nullable=False)
     posts: Mapped[list["Post"]] = relationship(back_populates="author")
+
+    def get_reset_token(self):
+        s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_token(token, expires_sec=1800):
+        s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token, max_age=expires_sec)['user_id']
+        except:
+            return None
+        return db.session.execute(db.select(User).where(User.id == user_id)).scalar()
 
     def __repr__(self) -> str:
         return f"User(username={self.username!r}, email={self.email!r}, image_file={self.image_file!r})"
