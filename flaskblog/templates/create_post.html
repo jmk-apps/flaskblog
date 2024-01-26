@@ -5,7 +5,7 @@
         <form action="" method="post" novalidate>
             {{ form.csrf_token }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">New Post</legend>
+                <legend class="border-bottom mb-4">{{ legend }}</legend>
                 <div class="form-group">
                     {{ form.title.label(class_="form-control-label mb-2") }}
                     {% if form.title.errors %}
