@@ -23,7 +23,7 @@ class User(db.Model, UserMixin):
 
     def get_reset_token(self):
         s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-        return s.dumps({'user_id': self.id}).decode('utf-8')
+        return s.dumps({'user_id': self.id})
 
     @staticmethod
     def verify_reset_token(token, expires_sec=1800):
