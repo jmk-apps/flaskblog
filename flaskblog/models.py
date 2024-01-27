@@ -1,9 +1,10 @@
-from flaskblog import db, login_manager, app
+from flaskblog import db, login_manager
 from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, DateTime, Text, ForeignKey
 from flask_login import UserMixin
 from itsdangerous import URLSafeTimedSerializer
+from flask import current_app
 
 
 @login_manager.user_loader
@@ -22,12 +23,12 @@ class User(db.Model, UserMixin):
     posts: Mapped[list["Post"]] = relationship(back_populates="author")
 
     def get_reset_token(self):
-        s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
         return s.dumps({'user_id': self.id})
 
     @staticmethod
     def verify_reset_token(token, expires_sec=1800):
-        s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
         try:
             user_id = s.loads(token, max_age=expires_sec)['user_id']
         except:
